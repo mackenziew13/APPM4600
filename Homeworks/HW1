@@ -1,0 +1,20 @@
+
+import numpy as np
+import scipy as sp
+
+
+## Problem 3
+
+#create f(x) 
+def f(x):
+    return (1+x+x**3)*np.cos(x)
+
+#use finite difference to find derivative
+y_prime=np.gradient(y)
+y_dprime=np.gradient(y_prime)
+
+#find P2(0.5)
+P2=y(0)+y_prime(0)*(x)+((y_dprime(0))/sp.special.factorial(2))*(x**2)
+print("P2(0.5)=",P2(0.5))
+
+
