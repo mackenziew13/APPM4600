@@ -1,20 +1,53 @@
 
 import numpy as np
 import scipy as sp
+import matplotlib.pyplot as plt
 
+############ PROBLEM 1 ########
+###PART A###
+x=np.arange(1.920,2.080,0.001)
+p1=x**9-18*x**8+144*x**7-672*x**6+2016*x**5-4032*x**4+5376*x**3-4608*x**2+2304*x-512
+fig1=plt.figure(1)
+plt.plot(x,p1)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('y vs x for expanded polynomial')
+#plt.show()
 
-## Problem 3
+###PART B###
+p2=(x-2)**9
 
+fig2=plt.figure(2)
+plt.plot(x,p1,label="Expanded Polynomial")
+plt.plot(x,p2,label = "Factored Polynomial")
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('y vs x for factored polynomial vs expanded')
+plt.show()
+
+############ PROBLEM 3 ########
+
+###PART A###
 #create f(x) 
+x=np.linspace(-10,10,1000)
 def f(x):
     return (1+x+x**3)*np.cos(x)
 
 #use finite difference to find derivative
-y_prime=np.gradient(y)
-y_dprime=np.gradient(y_prime)
+h=1*10**-5
+a=0
+f_prime=(f(a+h)-f(a-h))/(2*h)
+f_dprime=(f(a+h)-2*f(a)+f(a-h))/(h**2)
 
 #find P2(0.5)
-P2=y(0)+y_prime(0)*(x)+((y_dprime(0))/sp.special.factorial(2))*(x**2)
-print("P2(0.5)=",P2(0.5))
+x=0.5
+P2=f(a)+f_prime*(x-a)+(f_dprime/2)*(x-a)**2
+print("P2(0.5)=",P2)
 
+#upper bound of error
+
+#actual error
+err_actual=f(0.5)-P2
+print("The actual error is",err_actual)
+###PART B###
 
