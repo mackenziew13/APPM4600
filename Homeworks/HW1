@@ -23,6 +23,7 @@ plt.plot(x,p2,label = "Factored Polynomial")
 plt.xlabel('x')
 plt.ylabel('y')
 plt.title('y vs x for factored polynomial vs expanded')
+plt.legend()
 plt.show()
 
 ############ PROBLEM 3 ########
@@ -40,14 +41,135 @@ f_prime=(f(a+h)-f(a-h))/(2*h)
 f_dprime=(f(a+h)-2*f(a)+f(a-h))/(h**2)
 
 #find P2(0.5)
-x=0.5
-P2=f(a)+f_prime*(x-a)+(f_dprime/2)*(x-a)**2
+x1=0.5
+P2=f(a)+f_prime*(x1-a)+(f_dprime/2)*(x1-a)**2
 print("P2(0.5)=",P2)
 
 #upper bound of error
-
+f_tprime_z=3.00909
+R2=(f_tprime_z/6)*(x1-a)**3
+print("The upper bound for the error is",R2)
 #actual error
 err_actual=f(0.5)-P2
 print("The actual error is",err_actual)
+###PART C###
+
+#redefine x and P2
+x=np.linspace(0,1,1000)
+P2=[]
+for xi in x:
+    P2.append(f(a)+f_prime*(xi-a)+(f_dprime/2)*(xi-a)**2)
+
+#calculate integral
+integral=np.trapezoid(P2,x)
+print("The estimate of the integral is",integral)
+
+###Part D###
+P2=(x-a)**3
+#calculate integral
+integral=(f_tprime_z/6)*np.trapezoid(P2,x)
+print("The upper bound of the error in the integral is",integral)
+
+
+############ PROBLEM 4 ########
+
+###PART A###
+#define variables
+a=1
+b=-56
+c=1
+
+#calculate and print rounded roots
+sqroot=np.sqrt(b**2-4*a*c)
+sqroot=round(sqroot,3)
+print("sqroot=",sqroot)
+r_r1=(-b+sqroot)/(2*a)
+r_r2=(-b-sqroot)/(2*a)
+print("rounded r1=",r_r1,"and rounded r2=",r_r2)
+
+#calculate and print non-rounded roots
+sqroot=np.sqrt(b**2-4*a*c)
+print("sqroot=",sqroot)
+r1=(-b+sqroot)/(2*a)
+r2=(-b-sqroot)/(2*a)
+print("r1=",r1,"and r2=",r2)
+
+#calculate error
+err_r1=(abs(r_r1-r1))/abs(r1)
+err_r2=(abs(r_r2-r2))/abs(r2)
+print("the error in r1 is",err_r1)
+print("the error in r2 is",err_r2)
+
+
 ###PART B###
 
+#find two approximation
+a_r2=56-r_r1
+b_r2=1/r_r1
+print("the r2 from the additon method is",a_r2)
+print("the r2 from the division method is",b_r2)
+err_ar2=(abs(a_r2-r2))/abs(r2)
+err_br2=(abs(b_r2-r2))/abs(r2)
+print("the error in r2 from the additon method is",err_ar2)
+print("the error in r2 from the division method is",err_br2)
+
+
+
+############ PROBLEM 5 ########
+
+### Part B ###
+x1=np.pi
+x2=10**6
+d=np.logspace(-16,0,17)
+
+#x1 = pi
+diff_x1=[]
+for di in d:
+    func1=np.cos(x1+di)-np.cos(x1)
+    func2=-2*np.sin((2*x1+di)/2)*np.sin(di/2)
+    diff_x1.append(abs(func1-func2))
+
+#x2=10^6
+diff_x2=[]
+for di in d:
+    func1=np.cos(x2+di)-np.cos(x2)
+    func2=-2*np.sin((2*x2+di)/2)*np.sin(di/2)
+    diff_x2.append(abs(func1-func2))
+
+#plotting
+fig3=plt.figure(3)
+plt.plot(d,diff_x1,label="Error for x=pi")
+plt.plot(d,diff_x2,label = "Error for x=10^6")
+plt.xlabel('delta')
+plt.ylabel('difference between expressions')
+plt.xscale('log')
+plt.yscale('log')
+plt.legend()
+plt.show()
+
+
+### Part C ###
+diff_x1_alg=[]
+for di in d:
+    func1=np.cos(x1+di)-np.cos(x1)
+    func2=-di*np.sin(x1)+(di**2/2)
+    diff_x1_alg.append(abs(func1-func2))
+
+#x2=10^6
+diff_x2_alg=[]
+for di in d:
+    func1=np.cos(x2+di)-np.cos(x2)
+    func2=-di*np.sin(x2)+(di**2/2)
+    diff_x2_alg.append(abs(func1-func2))
+
+fig4=plt.figure(4)
+plt.plot(d,diff_x1,label="Error for x=pi for modified expression")
+plt.plot(d,diff_x2,label = "Error for x=10^6 for modified expression")
+plt.plot(d,diff_x1_alg,label="Error for x=pi for algorithm")
+plt.plot(d,diff_x2_alg, label="Error for x=10^6 for algorithm")
+plt.xlabel('delta')
+plt.ylabel('difference between expressions')
+plt.xscale('log')
+plt.yscale('log')
+plt.legend()
+plt.show()
