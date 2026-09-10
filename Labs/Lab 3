@@ -1,0 +1,42 @@
+#### Pre Lab ######
+
+import numpy as np
+
+
+def g(x):
+    return (10/(x+4))**(1/2)
+    
+p=1.3652300134140976
+p0=1.5 #initial guess
+tol=10**(-10)#convergence tolerance
+
+p_i=g(p0) #first iteration
+p_iplus1=g(p_i)
+i = 1
+err_num=[]
+err_denom=[]
+converged = False
+
+while converged==False :
+    err_num=(np.log(abs(p_iplus1-p)))
+    err_denom=(np.log(abs(p_i-p)))
+    i=i+1
+    if abs(p_iplus1-p_i) < tol:
+        
+        p_i=p_iplus1
+        converged=True
+        
+    else:
+        p_iminus1=p_i
+        p_i=p_iplus1
+        p_iplus1=g(p_i)
+        if i >= 3:
+            alpha=(np.log(abs(p_iplus1-p))-np.log(abs(p_i-p)))/(np.log(abs(p_i-p))-np.log(abs(p_iminus1-p)))
+            l= abs(p_iplus1-p)/((abs(p_i-p))**alpha)
+
+print('Converged to', p_i, 'after',i,'iterations. The convergence order is',alpha ,'and the constant associated with it is', l)
+
+#####Lab#####
+p0=1#initial guess
+pn=g(p0)
+p_hat=
