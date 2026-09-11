@@ -1,0 +1,37 @@
+###### Problem 3 ######
+
+##Part C##
+import math as math
+import numpy as np
+import matplotlib.pyplot as plt
+
+def f(x):
+    y = math.e**x
+    return y - 1
+
+x=9.999999995000000*10**-10
+est=f(x)
+print('The estimate for f(x) is',est)
+
+##Part D##
+a=0
+true=math.expm1(x)
+P2=(math.e**a-1)+math.e**a*(x-a)+(math.e**a/2)*(x-a)**2
+err=abs(P2-true)/abs(true)
+print('P2=',P2)
+print('The error is',err, 'for P2')
+
+
+######Problem 6#####
+
+fig1=plt.figure(1)
+x=np.linspace(-10,10,1000)
+y=x-4*np.sin(2*x)-3
+y2=-np.cos(2*x)+(5/4)
+plt.plot(x,y)
+plt.plot(x,y2)
+plt.axhline(0)
+plt.axhline(1)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
