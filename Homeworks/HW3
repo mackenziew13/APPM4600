@@ -1,0 +1,31 @@
+import numpy as np
+import scipy as sci
+import matplotlib.pyplot as plt
+######### Problem 2 #########
+###PART A###
+
+#given
+Ti=20 #degrees C
+Ts=-15#degrees C
+alpha=0.138*10**6#m^2 per second
+secperday=86400
+days=60
+
+#defining x, t and T
+x=np.linspace(0,100,10*12)
+t=secperday*days
+T=(Ti-Ts)*sci.special.erf(x/(2*np.sqrt(alpha*t)))
+plt.plot(x,T)
+plt.xlabel('Depth (Meters)')
+plt.ylabel('Temperature(Degrees Celcius)')
+plt.title('Temperature at X Meters After a Cold Snap')
+plt.show()
+#### not right, figure out what to do with t
+
+
+### PART B ###
+epsilon=10**-13
+#Bisection
+
+###Part C ###
+#Newton
