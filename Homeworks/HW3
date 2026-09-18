@@ -1,31 +1,226 @@
 import numpy as np
 import scipy as sci
 import matplotlib.pyplot as plt
+
+######## Problem 1 ##########
+def g(x):
+    return 12/(1+x)
+    
+p=3
+p0=2.5#initial guess
+tol=10**(-10)#convergence tolerance
+
+p_i=g(p0) #first iteration
+p_iplus1=g(p_i)
+i = 1
+err_num=[]
+err_denom=[]
+converged = False
+
+while converged==False :
+    err_num=(np.log(abs(p_iplus1-p)))
+    err_denom=(np.log(abs(p_i-p)))
+    i=i+1
+    if abs(p_iplus1-p_i) < tol:
+        
+        p_i=p_iplus1
+        converged=True
+        
+    else:
+        if i >= 3:
+          alpha=(np.log(abs(p_iplus1-p))-np.log(abs(p_i-p)))/(np.log(abs(p_i-p))-np.log(abs(p_iminus1-p)))
+          l= abs(p_iplus1-p)/((abs(p_i-p))**alpha)
+        p_iminus1=p_i
+        p_i=p_iplus1
+        p_iplus1=g(p_i)
+        
+
+print('Converged to', p_i, 'after',i,'iterations. The convergence order is',alpha ,'and the constant associated with it is', l)
+
+
+
+
+
 ######### Problem 2 #########
 ###PART A###
 
 #given
 Ti=20 #degrees C
 Ts=-15#degrees C
-alpha=0.138*10**6#m^2 per second
+alpha=0.138*10**-6#m^2 per second
 secperday=86400
 days=60
 
 #defining x, t and T
-x=np.linspace(0,100,10*12)
+x=np.linspace(-0,5,100)
 t=secperday*days
-T=(Ti-Ts)*sci.special.erf(x/(2*np.sqrt(alpha*t)))
-plt.plot(x,T)
+def f(x):
+     return (Ti-Ts)*sci.special.erf(x/(2*np.sqrt(alpha*t)))+Ts
+plt.plot(x,f(x))
+plt.axhline(0)
 plt.xlabel('Depth (Meters)')
 plt.ylabel('Temperature(Degrees Celcius)')
 plt.title('Temperature at X Meters After a Cold Snap')
 plt.show()
-#### not right, figure out what to do with t
+
 
 
 ### PART B ###
 epsilon=10**-13
-#Bisection
+#From Dr.Gilman's code
+def driver():
+
+# use routines    
+    f = lambda x: (Ti-Ts)*sci.special.erf(x/(2*np.sqrt(alpha*t)))+Ts
+    a = 0
+    b = 5
+
+    tol = epsilon
+
+    [astar,ier] = bisection(f,a,b,tol)
+    print('the approximate root is',astar)
+    print('the error message reads:',ier)
+    print('f(astar) =', f(astar))
+
+
+# define routines
+def bisection(f,a,b,tol):
+    
+#    Inputs:
+#     f,a,b       - function and endpoints of initial interval
+#      tol  - bisection stops when interval length < tol
+
+#    Returns:
+#      astar - approximation of root
+#      ier   - error message
+#            - ier = 1 => Failed
+#            - ier = 0 == success
+
+#     first verify there is a root we can find in the interval 
+    print('Bisection')
+    fa = f(a)
+    fb = f(b);
+    if (fa*fb>0):
+       ier = 1
+       astar = a
+       return [astar, ier]
+
+#   verify end points are not a root 
+    if (fa == 0):
+      astar = a
+      ier =0
+      return [astar, ier]
+
+    if (fb ==0):
+      astar = b
+      ier = 0
+      return [astar, ier]
+
+    count = 0
+    d = 0.5*(a+b)
+    while (abs(d-a)> tol):
+      fd = f(d)
+      if (fd ==0):
+        astar = d
+        ier = 0
+        return [astar, ier]
+      if (fa*fd<0):
+         b = d
+      else: 
+        a = d
+        fa = fd
+      d = 0.5*(a+b)
+      count = count +1
+#      print('abs(d-a) = ', abs(d-a))
+      
+    astar = d
+    ier = 0
+    print('count = ', count)
+    return [astar, ier]
+      
+driver()
 
 ###Part C ###
-#Newton
+#Dr Gilman's Code
+def driver():
+
+  f = lambda x: (Ti-Ts)*sci.special.erf(x/(2*np.sqrt(alpha*t)))+Ts 
+  fp = lambda x: (Ti-Ts)*((2*np.exp(x**2))/np.sqrt(np.pi))+ sci.special.erf(x/(2*np.sqrt(alpha*t)))
+  p0 = 5
+  Nmax = 100
+  tol = epsilon
+
+  (p,pstar,info,it) = newton(f,fp,p0,tol, Nmax)
+  print('the approximate root is', '%16.16e' % pstar)
+  print('the error message reads:', '%d' % info)
+  print('Number of iterations:', '%d' % it)
+
+
+def newton(f,fp,p0,tol,Nmax):
+  print('Newton')
+  p = np.zeros(Nmax+1);
+  p[0] = p0
+  for it in range(Nmax):
+      p1 = p0-f(p0)/fp(p0)
+      p[it+1] = p1
+      if (abs(p1-p0) < tol):
+          pstar = p1
+          info = 0
+          return [p,pstar,info,it]
+      p0 = p1
+  pstar = p1
+  info = 1
+  return [p,pstar,info,it]
+        
+driver()
+
+
+
+########Problem 3###########
+def driver():
+
+# test functions 
+     f1 = lambda x: x-((x**5-7)/(x**2))
+# fixed point is alpha1 = 1.4987....
+
+     #f2 = lambda x: x
+#fixed point is alpha2 = 3.09... 
+
+     Nmax =1000
+     tol = 1e-10
+
+# test f1 '''
+     x0 = 1
+     [xstar,ier] = fixedpt(f1,x0,tol,Nmax)
+     print('the approximate fixed point is:',xstar)
+     print('f1(xstar):',f1(xstar))
+     print('Error message reads:',ier)
+    
+#test f2 '''
+     #x0 = 1
+     #[xstar,ier] = fixedpt(f2,x0,tol,Nmax)
+     #print('the approximate fixed point is:',xstar)
+     #print('f2(xstar):',f2(xstar))
+     #print('Error message reads:',ier)
+
+
+
+# define routines
+def fixedpt(f,x0,tol,Nmax):
+
+    count = 0
+    while (count <Nmax):
+       count = count +1
+       x1 = f(x0)
+       if (abs(x1-x0) <tol):
+          xstar = x1
+          ier = 0
+          return [xstar,ier]
+       x0 = x1
+
+    xstar = x1
+    ier = 1
+    return [xstar, ier]
+    
+
+driver()
